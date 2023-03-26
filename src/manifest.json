@@ -1,0 +1,33 @@
+{
+    "manifest_version": 3,
+    "name": "handy tools",
+    "description": "tool collection",
+    "version": "0.0.1",
+
+    "content_scripts": [
+        {
+            "matches": ["https://www.bilibili.com/"],
+            "js": ["content_script_main.js"],
+            "run_at": "document_end"
+        }
+    ],
+
+    "icons": {
+        "16": "asset/icon/icon_16.png",
+        "48": "asset/icon/icon_48.png",
+        "128": "asset/icon/icon_128.png"
+    },
+    "options_page": "options.html",
+
+    "background": {
+        "service_worker": "background.js"
+    },
+
+    "permissions": [
+        "webNavigation", "scripting"
+    ],
+
+    "host_permissions": [
+        "https://www.bilibili.com/"
+    ]
+}
