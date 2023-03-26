@@ -20,7 +20,8 @@ function getNextButtonElement() {
 
 function openAll() {
   for (let card of document.getElementsByClassName("feed-card")) {
-    card.getElementsByTagName("a")[0].click()
+    // card.getElementsByTagName("a")[0].click()
+    card.getElementsByTagName("a")[0].dispatchEvent(new MouseEvent("click", {ctrlKey: true}))
   }
 }
 
