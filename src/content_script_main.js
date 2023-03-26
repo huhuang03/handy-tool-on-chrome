@@ -1,4 +1,6 @@
 const nextButtonRootClassName = "feed-roll-btn"
+const MAX = 6
+
 function getNextButtonElement() {
   let roots = document.getElementsByClassName(nextButtonRootClassName)
   for (let root of roots) {
@@ -19,9 +21,15 @@ function getNextButtonElement() {
 }
 
 function openAll() {
-  for (let card of document.getElementsByClassName("feed-card")) {
-    // card.getElementsByTagName("a")[0].click()
-    card.getElementsByTagName("a")[0].dispatchEvent(new MouseEvent("click", {ctrlKey: true}))
+  let cards = document.getElementsByClassName("feed-card")
+  cards = Array.from(cards).slice(0, MAX);
+
+  for (let card of cards) {
+    const a = card.getElementsByTagName("a")[0];
+    const url = new URL(a.href)
+    if (url.host.includes('bilibili')) {
+      a.dispatchEvent(new MouseEvent("click", {ctrlKey: true}))
+    }
   }
 }
 
