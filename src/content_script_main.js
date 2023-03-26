@@ -1,70 +1,111 @@
-const nextButtonRootClassName = "feed-roll-btn"
-const MAX = 6
+const nextButtonRootClassName = 'feed-roll-btn';
+const MAX = 6;
 
 function getNextButtonElement() {
-  let roots = document.getElementsByClassName(nextButtonRootClassName)
+  let roots = document.getElementsByClassName(nextButtonRootClassName);
   for (let root of roots) {
-    let found = false
-    let spans = root.getElementsByTagName("span")
+    let found = false;
+    let spans = root.getElementsByTagName('span');
     for (let span of spans) {
       console.log(span);
       if (span.innerHTML === '换一换') {
         found = true;
-        break
+        break;
       }
     }
     if (found) {
-      return root
+      return root;
     }
   }
-  return null
+  return null;
 }
 
 function openAll() {
-  let cards = document.getElementsByClassName("feed-card")
+  let cards = document.getElementsByClassName('feed-card');
   cards = Array.from(cards).slice(0, MAX);
 
   for (let card of cards) {
-    const a = card.getElementsByTagName("a")[0];
-    const url = new URL(a.href)
+    const a = card.getElementsByTagName('a')[0];
+    const url = new URL(a.href);
     if (url.host.includes('bilibili')) {
-      a.dispatchEvent(new MouseEvent("click", {ctrlKey: true}))
+      a.dispatchEvent(new MouseEvent('click', {ctrlKey: true}));
     }
   }
 }
 
 function init() {
-  const nextButtonRoot = getNextButtonElement()
+  const nextButtonRoot = getNextButtonElement();
 
-  const playAllButton = nextButtonRoot.cloneNode(true)
-  playAllButton.style.transform = `translate(10px, ${nextButtonRoot.clientHeight + 10}px)`
-  playAllButton.getElementsByTagName("span")[0].innerText = "全部"
-  playAllButton.onclick = openAll
-  nextButtonRoot.parentElement.appendChild(playAllButton)
+  const playAllButton = nextButtonRoot.cloneNode(true);
+  playAllButton.style.transform = `translate(10px, ${nextButtonRoot.clientHeight + 10}px)`;
+  const span = playAllButton.getElementsByTagName('span')[0]
+  span.innerText = '全部';
+  playAllButton.onclick = openAll;
+  // const newSvg = createSvg([
+  //   {
+  //     d: 'M512 74.666667C270.933333 74.666667 74.666667 270.933333 74.666667 512S270.933333 949.333333 512 949.333333 949.333333 753.066667 949.333333 512 753.066667 74.666667 512 74.666667z m0 810.666666c-204.8 0-373.333333-168.533333-373.333333-373.333333S307.2 138.666667 512 138.666667 885.333333 307.2 885.333333 512 716.8 885.333333 512 885.333333z',
+  //     fill: '#18191c',
+  //   },
+  //   {
+  //     d: 'M708.266667 465.066667l-234.666667-134.4c-8.533333-4.266667-17.066667-6.4-25.6-6.4-29.866667 0-53.333333 23.466667-53.333333 53.333333v268.8c0 8.533333 2.133333 19.2 6.4 25.6 10.666667 17.066667 27.733333 27.733333 46.933333 27.733333 8.533333 0 17.066667-2.133333 25.6-6.4l234.666667-134.4c8.533333-4.266667 14.933333-10.666667 19.2-19.2 6.4-12.8 8.533333-27.733333 4.266666-40.533333-2.133333-14.933333-10.666667-25.6-23.466666-34.133333z m-249.6 162.133333V396.8L661.333333 512l-202.666666 115.2z',
+  //     fill: 'currentColor'
+  //   }
+  // ], 16, 16)
+  // const svg = playAllButton.getElementsByTagName("svg")[0]
+  // const svgContainer = svg.parentElement
+  // svgContainer.removeChild(svg)
+  // svgContainer.appendChild(newSvg)
+  // svgContainer.insertBefore(span, svg)
+
+  nextButtonRoot.parentElement.appendChild(playAllButton);
 }
 
-// how to avoid redefine?
-// var SVG_ID = "not_interested_svg"
-//
 // 不断调用checkFunc。一旦返回ture，则调用func
 function waitAndDo(func, checkFunc, timeout, checkInterval = 50) {
-    let startTime = new Date().getTime()
-    _waitAndDoOnce(startTime, func, checkFunc, timeout, checkInterval)
+  let startTime = new Date().getTime();
+  _waitAndDoOnce(startTime, func, checkFunc, timeout, checkInterval);
 }
 
 function _waitAndDoOnce(startTime, func, checkFunc, timeout, checkInterval) {
-    setTimeout(() => {
-        if (checkFunc()) {
-            func()
-        } else if ((new Date().getTime() - startTime) < timeout) {
-            _waitAndDoOnce(startTime, func, checkFunc, timeout, checkInterval)
-        }
-    }, checkInterval)
+  setTimeout(() => {
+    if (checkFunc()) {
+      func();
+    } else if ((new Date().getTime() - startTime) < timeout) {
+      _waitAndDoOnce(startTime, func, checkFunc, timeout, checkInterval);
+    }
+  }, checkInterval);
 }
 
 waitAndDo(init,
     () => getNextButtonElement(),
-    2000)
+    2000);
+
+function createSvg(pathList, width, height) {
+  function getNode(n, v) {
+    n = document.createElementNS('http://www.w3.org/2000/svg', n);
+    for (let p in v)
+      n.setAttributeNS(null, p.replace(/[A-Z]/g, function(m, p, o, s) {
+        return '-' + m.toLowerCase();
+      }), v[p]);
+    return n;
+  }
+
+  let svg = getNode('svg', {
+    width: width,
+    height: height,
+    viewBox: `0 0 ${width} ${height}`,
+    fill: `currentColor`,
+    xmlns: 'http://www.w3.org/2000/svg',
+    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
+  });
+
+  for (let p of pathList) {
+    let path = getNode('path', p);
+    svg.appendChild(path)
+  }
+  return svg;
+}
+
 //
 // class EleWrapper {
 //     constructor(ele) {
@@ -158,34 +199,6 @@ waitAndDo(init,
 //     }
 //
 //     // 创建svg。即那个圆圈中加一杠图案
-//     _createSvg() {
-//         function getNode(n, v) {
-//             n = document.createElementNS("http://www.w3.org/2000/svg", n);
-//             for (let p in v)
-//                 n.setAttributeNS(null, p.replace(/[A-Z]/g, function(m, p, o, s) { return "-" + m.toLowerCase(); }), v[p]);
-//             return n
-//         }
-//
-//         let width = 24
-//         let height = width
-//
-//         let svg = getNode("svg", {width: width, height: height});
-//         let padding = 2
-//         svg.setAttribute('viewBox', `-${padding} -${padding} ${width + padding * 2} ${height + padding * 2}`)
-//         svg.setAttribute('preserveAspectRatio', 'xMidYMid meet')
-//         document.body.insertBefore(svg, document.body.firstChild);
-//
-//
-//         let g = getNode('g', {class: ''});
-//         svg.appendChild(g)
-//
-//         let path1 = getNode("path", {d: 'M0 0h24v24H0z', fill: 'none', class: 'style-scope yt-icon'})
-//         let path2 = getNode("path", {d: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-3.1L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z',
-//             class: 'style-scope yt-icon'})
-//         g.appendChild(path1)
-//         g.appendChild(path2)
-//         return svg
-//     }
 // }
 //
 //
