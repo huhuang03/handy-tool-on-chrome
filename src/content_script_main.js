@@ -124,7 +124,6 @@ function createSvg(pathList, width, height) {
   return svg;
 }
 
-//
 // class EleWrapper {
 //     constructor(ele) {
 //         this.ele = ele
