@@ -12,9 +12,14 @@ const openAllSvgPathList = [
   }
 ]
 
+function createElementWithSvgNamespace(tagName) {
+  return document.createElementNS("http://www.w3.org/2000/svg", tagName)
+}
+
 function initOpenAllSvg(origin) {
+  origin.setAttribute("viewBox", "0 0 1024 1024")
   for (let path of openAllSvgPathList) {
-    const pElement = document.createElement("path")
+    const pElement = createElementWithSvgNamespace("path")
     for (let key in path) {
       pElement.setAttribute(key, path[key])
     }
