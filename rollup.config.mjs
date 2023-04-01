@@ -17,7 +17,7 @@ export default [
     plugins: [
         copy({
           patterns: '*',
-          exclude: '*.js',
+          exclude: ['*.js', '*.ts'],
           rootDir: 'src/'
         })
     ]
@@ -25,7 +25,7 @@ export default [
   {
 
     input: {
-      'content_script_bilibili_video': 'src/content_script_bilibili_video.js',
+      'content_script_bilibili_video': 'src/content_script_bilibili_video.ts',
     },
     output: {
       ...commonOutput,

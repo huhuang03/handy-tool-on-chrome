@@ -1,3 +1,5 @@
+import {showToast} from 'chrome_plugin_common'
+
 const speeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
 
 function getVideo() {
@@ -18,7 +20,9 @@ function setSpeed(speed) {
     return;
   }
   video.playbackRate = speed
+  showToast(`x${speed}`)
 }
+
 function incrementSpeed() {
   const speed = getSpeed()
   const index = speeds.indexOf(speed)
