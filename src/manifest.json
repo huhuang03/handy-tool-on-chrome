@@ -22,15 +22,6 @@
         "48": "asset/icon/icon_48.png",
         "128": "asset/icon/icon_128.png"
     },
-    "options_page": "options.html",
-
-    "background": {
-        "service_worker": "background.js"
-    },
-
-    "permissions": [
-        "webNavigation", "scripting"
-    ],
 
     "host_permissions": [
         "https://www.bilibili.com/"
