@@ -1,3 +1,5 @@
+import ts from 'rollup-plugin-ts'
+import resolve from '@rollup/plugin-node-resolve';
 import {copy} from '@web/rollup-plugin-copy'
 
 const commonOutput = {
@@ -16,14 +18,14 @@ export default [
     },
     plugins: [
         copy({
-          patterns: '*',
+          patterns: '**/*',
           exclude: ['*.js', '*.ts'],
           rootDir: 'src/'
         })
     ]
   },
   {
-
+    plugins: [resolve(), ts()],
     input: {
       'content_script_bilibili_video': 'src/content_script_bilibili_video.ts',
     },

@@ -1,4 +1,4 @@
-import {showToast} from 'chrome_plugin_common'
+import {init, showToast} from '@huhuang03/chrome_plugin_common'
 
 const speeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
 
@@ -35,6 +35,7 @@ function decrementSpeed() {
   setSpeed(speeds[Math.max(0, index - 1) % speeds.length])
 }
 
+init()
 document.addEventListener('keydown', e => {
   if (e.shiftKey && e.key === '>') {
     incrementSpeed()
