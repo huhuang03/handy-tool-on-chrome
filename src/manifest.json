@@ -22,7 +22,9 @@
         "48": "asset/icon/icon_48.png",
         "128": "asset/icon/icon_128.png"
     },
-
+    "permissions": [
+        "storage"
+    ],
     "host_permissions": [
         "https://www.bilibili.com/"
     ]

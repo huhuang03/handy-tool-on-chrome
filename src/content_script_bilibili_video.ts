@@ -2,6 +2,8 @@ import {init, showToast} from '@huhuang03/chrome_plugin_common'
 
 const speeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
 
+declare var chrome: any
+
 function getVideo() {
   return document.querySelector("video")
 }
@@ -16,11 +18,13 @@ function getSpeed() {
 
 function setSpeed(speed) {
   let video = getVideo();
+  console.log('video: ', video)
   if (!video) {
     return;
   }
   video.playbackRate = speed
   showToast(`x${speed}`)
+  saveSpeed(speed)
 }
 
 function incrementSpeed() {
@@ -43,3 +47,20 @@ document.addEventListener('keydown', e => {
     decrementSpeed()
   }
 })
+
+const _KEY_SPEED = "key_speed"
+
+function restoreSpeed() {
+  chrome.storage.sync.get([_KEY_SPEED]).then(res => {
+    const speed = res[_KEY_SPEED]
+    if (speed) {
+      setSpeed(speed)
+    }
+  })
+}
+
+function saveSpeed(speed) {
+  chrome.storage.sync.set({'key_speed': speed}).then(() => {})
+}
+
+setTimeout(restoreSpeed)
