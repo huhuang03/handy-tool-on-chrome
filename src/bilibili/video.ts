@@ -16,6 +16,7 @@ function getSpeed() {
   return video.playbackRate
 }
 
+// @ts-ignore
 function setSpeed(speed) {
   let video = getVideo();
   console.log('video: ', video)
@@ -29,28 +30,27 @@ function setSpeed(speed) {
 
 function incrementSpeed() {
   const speed = getSpeed()
+  if (!speed) {
+    return
+  }
   const index = speeds.indexOf(speed)
   setSpeed(speeds[Math.min(speeds.length - 1, index + 1) % speeds.length])
 }
 
 function decrementSpeed() {
   const speed = getSpeed()
+  if (!speed) {
+    return
+  }
   const index = speeds.indexOf(speed)
   setSpeed(speeds[Math.max(0, index - 1) % speeds.length])
 }
 
 init()
-document.addEventListener('keydown', e => {
-  if (e.shiftKey && e.key === '>') {
-    incrementSpeed()
-  } else if (e.shiftKey && e.key === '<') {
-    decrementSpeed()
-  }
-})
-
 const _KEY_SPEED = "key_speed"
 
 function restoreSpeed() {
+  // @ts-ignore
   chrome.storage.sync.get([_KEY_SPEED]).then(res => {
     const speed = res[_KEY_SPEED]
     if (speed) {
@@ -59,8 +59,18 @@ function restoreSpeed() {
   })
 }
 
+// @ts-ignore
 function saveSpeed(speed) {
   chrome.storage.sync.set({'key_speed': speed}).then(() => {})
 }
 
-setTimeout(restoreSpeed)
+export function initVideo() {
+  document.addEventListener('keydown', e => {
+    if (e.shiftKey && e.key === '>') {
+      incrementSpeed()
+    } else if (e.shiftKey && e.key === '<') {
+      decrementSpeed()
+    }
+  })
+  setTimeout(restoreSpeed)
+}

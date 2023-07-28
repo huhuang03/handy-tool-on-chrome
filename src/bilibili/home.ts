@@ -1,6 +1,9 @@
+import { isBilibiliUrl } from '@/bilibili/bilibili_util'
+
 const nextButtonRootClassName = 'feed-roll-btn';
 const MAX = 6;
 
+// @ts-ignore
 const openedUrl = []
 
 const openAllSvgPathList = [
@@ -14,15 +17,18 @@ const openAllSvgPathList = [
   }
 ]
 
+// @ts-ignore
 function createElementWithSvgNamespace(tagName) {
   return document.createElementNS("http://www.w3.org/2000/svg", tagName)
 }
 
+// @ts-ignore
 function initOpenAllSvg(origin) {
   origin.setAttribute("viewBox", "0 0 1024 1024")
   for (let path of openAllSvgPathList) {
     const pElement = createElementWithSvgNamespace("path")
     for (let key in path) {
+      // @ts-ignore
       pElement.setAttribute(key, path[key])
     }
     origin.appendChild(pElement)
@@ -48,22 +54,18 @@ function getNextButtonElement() {
   return null;
 }
 
-function urlIsBilibili(href) {
-  const url = new URL(href);
-  return url.host.includes('bilibili')
-}
-
 function openAll() {
   let cards = document.getElementsByClassName('feed-card');
+  // @ts-ignore
   cards = Array.from(cards).slice(0, MAX);
 
   let firstOpenUrl;
   for (let card of cards) {
     const a = card.getElementsByTagName('a')[0];
     const dataTargetUrl = a.getAttribute("data-target-url")
-    if (!dataTargetUrl || urlIsBilibili(dataTargetUrl)) {
+    if (!dataTargetUrl || isBilibiliUrl(dataTargetUrl)) {
+      // @ts-ignore
       if (openedUrl.includes(dataTargetUrl)) {
-        console.log("already opened once");
         break;
       }
       if (!firstOpenUrl) {
@@ -78,23 +80,31 @@ function openAll() {
 function init() {
   const nextButtonRoot = getNextButtonElement();
 
+  // @ts-ignore
   const playAllButton = nextButtonRoot.cloneNode(true);
+  // @ts-ignore
   playAllButton.style.transform = `translate(10px, ${nextButtonRoot.clientHeight + 10}px)`;
+  // @ts-ignore
   const span = playAllButton.getElementsByTagName('span')[0]
   span.innerText = '全部';
+  // @ts-ignore
   playAllButton.onclick = openAll;
+  // @ts-ignore
   const svg = playAllButton.getElementsByTagName("svg")[0]
   initOpenAllSvg(svg)
 
+  // @ts-ignore
   nextButtonRoot.parentElement.appendChild(playAllButton);
 }
 
 // 不断调用checkFunc。一旦返回ture，则调用func
+// @ts-ignore
 function waitAndDo(func, checkFunc, timeout, checkInterval = 50) {
   let startTime = new Date().getTime();
   _waitAndDoOnce(startTime, func, checkFunc, timeout, checkInterval);
 }
 
+// @ts-ignore
 function _waitAndDoOnce(startTime, func, checkFunc, timeout, checkInterval) {
   setTimeout(() => {
     if (checkFunc()) {
@@ -105,11 +115,10 @@ function _waitAndDoOnce(startTime, func, checkFunc, timeout, checkInterval) {
   }, checkInterval);
 }
 
-waitAndDo(init,
-    () => getNextButtonElement(),
-    2000);
 
+// @ts-ignore
 function createSvg(pathList, width, height) {
+  // @ts-ignore
   function getNode(n, v) {
     n = document.createElementNS('http://www.w3.org/2000/svg', n);
     for (let p in v)
@@ -133,4 +142,10 @@ function createSvg(pathList, width, height) {
     svg.appendChild(path)
   }
   return svg;
+}
+
+export function initHome() {
+  waitAndDo(init,
+    () => getNextButtonElement(),
+    2000);
 }

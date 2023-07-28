@@ -6,13 +6,8 @@
 
     "content_scripts": [
         {
-            "matches": ["https://www.bilibili.com/"],
+            "matches": ["https://www.bilibili.com/*"],
             "js": ["content_script_main.js"],
-            "run_at": "document_end"
-        },
-        {
-            "matches": ["https://www.bilibili.com/video/*"],
-            "js": ["content_script_bilibili_video.js"],
             "run_at": "document_end"
         }
     ],
@@ -26,6 +21,6 @@
         "storage"
     ],
     "host_permissions": [
-        "https://www.bilibili.com/"
+        "https://www.bilibili.com/*"
     ]
 }
