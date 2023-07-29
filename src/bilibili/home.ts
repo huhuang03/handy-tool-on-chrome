@@ -30,7 +30,6 @@ function getNextButtonElement(): HTMLElement | null {
     let found = false;
     let spans = root.getElementsByTagName('span');
     for (let span of spans) {
-      console.log(span);
       if (span.innerHTML === '换一换') {
         found = true;
         break;
@@ -41,6 +40,11 @@ function getNextButtonElement(): HTMLElement | null {
     }
   }
   return null;
+}
+
+function getNextButton(): HTMLElement | undefined {
+  // @ts-ignore
+  return getNextButtonElement()?.querySelector('button')
 }
 
 function openAll() {
@@ -66,6 +70,24 @@ function openAll() {
   openedUrl.push(firstOpenUrl)
 }
 
+function doLoop(times: number) {
+  if (times <= 0) {
+    return
+  }
+
+  getNextButton()?.click()
+  setTimeout(() => {
+    openAll()
+    times-= 1
+    repeatOpenAll(times)
+  }, 800)
+}
+
+function repeatOpenAll(times: number) {
+  openAll()
+  doLoop(times - 1)
+}
+
 function init() {
   const nextButtonRoot = getNextButtonElement();
   if (nextButtonRoot == null) {
@@ -80,6 +102,15 @@ function init() {
 
   // @ts-ignore
   nextButtonRoot.parentElement.appendChild(playAllButton);
+
+
+  const playX5AllButton = createButton(openAllSvgPathList, '全部\nx5', () => {
+    console.log('playX5AllButton clicked')
+    repeatOpenAll(5)
+  })
+  playX5AllButton.style.transform = `translate(${10 + 10 + nextButtonRoot.clientWidth}px, 0px)`;
+  // @ts-ignore
+  nextButtonRoot.parentElement.appendChild(playX5AllButton)
 }
 
 // 不断调用checkFunc。一旦返回ture，则调用func
