@@ -16,15 +16,31 @@ function getSpeed() {
   return video.playbackRate
 }
 
+const handledVideoList: string[] = []
+
+/**
+ * set speed and remember it
+ * @param speed
+ */
 // @ts-ignore
-function setSpeed(speed) {
+function setSpeed(speed, showPrompt = false) {
   let video = getVideo();
-  console.log('video: ', video)
   if (!video) {
     return;
   }
+  const src = video.getAttribute('src')
+  if (!src) {
+    return
+  }
+
+  if (handledVideoList.includes(src)) {
+    return
+  }
+  handledVideoList.push(src)
   video.playbackRate = speed
-  showToast(`x${speed}`)
+  if (showPrompt) {
+    showToast(`x${speed}`)
+  }
   saveSpeed(speed)
 }
 
@@ -49,12 +65,12 @@ function decrementSpeed() {
 init()
 const _KEY_SPEED = "key_speed"
 
-function restoreSpeed() {
+function _restoreSpeed(showPrompt: boolean = false) {
   // @ts-ignore
   chrome.storage.sync.get([_KEY_SPEED]).then(res => {
     const speed = res[_KEY_SPEED]
     if (speed) {
-      setSpeed(speed)
+      setSpeed(speed, showPrompt)
     }
   })
 }
@@ -62,6 +78,24 @@ function restoreSpeed() {
 // @ts-ignore
 function saveSpeed(speed) {
   chrome.storage.sync.set({'key_speed': speed}).then(() => {})
+}
+
+// hack way
+function listenVideoChange() {
+  let mutationObserver = new MutationObserver((mutations, observer) => {
+    setTimeout(() => _restoreSpeed(false))
+  });
+  const video = getVideo()
+  if (!video) {
+    console.error("can't listen video change, because video is null")
+    return
+  }
+  mutationObserver.observe(video, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+    attributeFilter: ['src']
+  })
 }
 
 export function initVideo() {
@@ -72,5 +106,6 @@ export function initVideo() {
       decrementSpeed()
     }
   })
-  setTimeout(restoreSpeed)
+  setTimeout(_restoreSpeed)
+  listenVideoChange()
 }
