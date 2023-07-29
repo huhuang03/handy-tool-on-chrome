@@ -1,4 +1,6 @@
 import { isBilibiliUrl } from '@/bilibili/bilibili_util'
+import {Callback} from 'webpack-cli';
+import {removeClass} from '@/util';
 
 const nextButtonRootClassName = 'feed-roll-btn';
 const MAX = 6;
@@ -22,20 +24,7 @@ function createElementWithSvgNamespace(tagName) {
   return document.createElementNS("http://www.w3.org/2000/svg", tagName)
 }
 
-// @ts-ignore
-function initOpenAllSvg(origin) {
-  origin.setAttribute("viewBox", "0 0 1024 1024")
-  for (let path of openAllSvgPathList) {
-    const pElement = createElementWithSvgNamespace("path")
-    for (let key in path) {
-      // @ts-ignore
-      pElement.setAttribute(key, path[key])
-    }
-    origin.appendChild(pElement)
-  }
-}
-
-function getNextButtonElement() {
+function getNextButtonElement(): HTMLElement | null {
   let roots = document.getElementsByClassName(nextButtonRootClassName);
   for (let root of roots) {
     let found = false;
@@ -48,7 +37,7 @@ function getNextButtonElement() {
       }
     }
     if (found) {
-      return root;
+      return root as HTMLElement;
     }
   }
   return null;
@@ -79,19 +68,15 @@ function openAll() {
 
 function init() {
   const nextButtonRoot = getNextButtonElement();
+  if (nextButtonRoot == null) {
+    console.error('why next button root is null?')
+    return
+  }
 
-  // @ts-ignore
-  const playAllButton = nextButtonRoot.cloneNode(true);
-  // @ts-ignore
+  const playAllButton = createButton(openAllSvgPathList, '全部', () => {
+    openAll()
+  })
   playAllButton.style.transform = `translate(10px, ${nextButtonRoot.clientHeight + 10}px)`;
-  // @ts-ignore
-  const span = playAllButton.getElementsByTagName('span')[0]
-  span.innerText = '全部';
-  // @ts-ignore
-  playAllButton.onclick = openAll;
-  // @ts-ignore
-  const svg = playAllButton.getElementsByTagName("svg")[0]
-  initOpenAllSvg(svg)
 
   // @ts-ignore
   nextButtonRoot.parentElement.appendChild(playAllButton);
@@ -116,32 +101,29 @@ function _waitAndDoOnce(startTime, func, checkFunc, timeout, checkInterval) {
 }
 
 
-// @ts-ignore
-function createSvg(pathList, width, height) {
+function createButton(iconSvgPathList: any[], text: string, callback: Callback<never>): HTMLElement {
+  const nextButtonRoot = getNextButtonElement();
+
   // @ts-ignore
-  function getNode(n, v) {
-    n = document.createElementNS('http://www.w3.org/2000/svg', n);
-    for (let p in v)
-      n.setAttributeNS(null, p.replace(/[A-Z]/g, function(m, p, o, s) {
-        return '-' + m.toLowerCase();
-      }), v[p]);
-    return n;
-  }
+  const dstButton = nextButtonRoot.cloneNode(true) as HTMLElement;
+  // by check, need remove this
+  removeClass(dstButton, 'smallest')
+  // // @ts-ignore
+  const span = dstButton.getElementsByTagName('span')[0]
+  span.innerText = text;
+  dstButton.onclick = () => callback();
+  const svg = dstButton.getElementsByTagName("svg")[0]
 
-  let svg = getNode('svg', {
-    width: width,
-    height: height,
-    viewBox: `0 0 ${width} ${height}`,
-    fill: `currentColor`,
-    xmlns: 'http://www.w3.org/2000/svg',
-    'xmlns:xlink': 'http://www.w3.org/1999/xlink',
-  });
-
-  for (let p of pathList) {
-    let path = getNode('path', p);
-    svg.appendChild(path)
+  svg.setAttribute("viewBox", "0 0 1024 1024")
+  for (let path of iconSvgPathList) {
+    const pElement = createElementWithSvgNamespace("path")
+    for (let key in path) {
+      // @ts-ignore
+      pElement.setAttribute(key, path[key])
+    }
+    svg.appendChild(pElement)
   }
-  return svg;
+  return dstButton as HTMLElement
 }
 
 export function initHome() {

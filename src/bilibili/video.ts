@@ -18,25 +18,13 @@ function getSpeed() {
 
 const handledVideoList: string[] = []
 
-/**
- * set speed and remember it
- * @param speed
- */
 // @ts-ignore
-function setSpeed(speed, showPrompt = false) {
-  let video = getVideo();
+function setSpeed(speed, video?: HTMLVideoElement= null, showPrompt = false) {
+  video = video || getVideo();
   if (!video) {
     return;
   }
-  const src = video.getAttribute('src')
-  if (!src) {
-    return
-  }
 
-  if (handledVideoList.includes(src)) {
-    return
-  }
-  handledVideoList.push(src)
   video.playbackRate = speed
   if (showPrompt) {
     showToast(`x${speed}`)
@@ -50,7 +38,7 @@ function incrementSpeed() {
     return
   }
   const index = speeds.indexOf(speed)
-  setSpeed(speeds[Math.min(speeds.length - 1, index + 1) % speeds.length])
+  setSpeed(speeds[Math.min(speeds.length - 1, index + 1) % speeds.length], undefined, true)
 }
 
 function decrementSpeed() {
@@ -59,7 +47,7 @@ function decrementSpeed() {
     return
   }
   const index = speeds.indexOf(speed)
-  setSpeed(speeds[Math.max(0, index - 1) % speeds.length])
+  setSpeed(speeds[Math.max(0, index - 1) % speeds.length], undefined, true)
 }
 
 init()
@@ -68,10 +56,25 @@ const _KEY_SPEED = "key_speed"
 function _restoreSpeed(showPrompt: boolean = false) {
   // @ts-ignore
   chrome.storage.sync.get([_KEY_SPEED]).then(res => {
+    const video = getVideo()
+    if (!video) {
+      return
+    }
+
+    const src = video.getAttribute('src')
+    if (!src) {
+      return
+    }
+
+    if (handledVideoList.includes(src)) {
+      return
+    }
+
     const speed = res[_KEY_SPEED]
     if (speed) {
-      setSpeed(speed, showPrompt)
+      setSpeed(speed, video, showPrompt)
     }
+    handledVideoList.push(src)
   })
 }
 
