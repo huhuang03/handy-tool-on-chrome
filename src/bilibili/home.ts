@@ -79,7 +79,7 @@ function doLoop(times: number) {
   setTimeout(() => {
     openAll()
     repeatOpenAll(times - 1)
-  }, 800)
+  }, 1500)
 }
 
 function repeatOpenAll(times: number) {
