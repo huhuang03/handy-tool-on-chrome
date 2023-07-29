@@ -78,8 +78,7 @@ function doLoop(times: number) {
   getNextButton()?.click()
   setTimeout(() => {
     openAll()
-    times-= 1
-    repeatOpenAll(times)
+    repeatOpenAll(times - 1)
   }, 800)
 }
 
