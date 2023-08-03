@@ -5,8 +5,7 @@ import {removeClass} from '@/util';
 const nextButtonRootClassName = 'feed-roll-btn';
 const MAX = 6;
 
-// @ts-ignore
-const openedUrl = []
+const openedUrl: string[] = []
 
 const openAllSvgPathList = [
   {
@@ -47,6 +46,15 @@ function getNextButton(): HTMLElement | undefined {
   return getNextButtonElement()?.querySelector('button')
 }
 
+function hasOpened(): Boolean {
+  let cards = document.getElementsByClassName('feed-card');
+  if (cards.length === 0) {
+    return false
+  }
+  let url = cards[0].getAttribute('dataTargetUrl')?? '';
+  return !!url && openedUrl.includes(url)
+}
+
 function openAll() {
   let cards = document.getElementsByClassName('feed-card');
   // @ts-ignore
@@ -67,6 +75,7 @@ function openAll() {
       a.dispatchEvent(new MouseEvent('click', {ctrlKey: true}));
     }
   }
+  // @ts-ignore
   openedUrl.push(firstOpenUrl)
 }
 
@@ -78,13 +87,17 @@ function doLoop(times: number) {
   getNextButton()?.click()
   setTimeout(() => {
     openAll()
-    repeatOpenAll(times - 1)
-  }, 1500)
+    doLoop(times - 1)
+  }, 1000)
 }
 
 function repeatOpenAll(times: number) {
-  openAll()
-  doLoop(times - 1)
+  if (!hasOpened()) {
+    openAll()
+    doLoop(times - 1)
+  } else {
+    doLoop(times)
+  }
 }
 
 function init() {
@@ -104,7 +117,6 @@ function init() {
 
 
   const playX5AllButton = createButton(openAllSvgPathList, '全部\nx5', () => {
-    console.log('playX5AllButton clicked')
     repeatOpenAll(5)
   })
   playX5AllButton.style.transform = `translate(${10 + 10 + nextButtonRoot.clientWidth}px, 0px)`;
