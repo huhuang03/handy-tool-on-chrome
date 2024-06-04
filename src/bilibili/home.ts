@@ -63,6 +63,9 @@ function openAll() {
   let firstOpenUrl;
   for (let card of cards) {
     const a = card.getElementsByTagName('a')[0];
+    if (a == null) {
+      continue
+    }
     const dataTargetUrl = a.getAttribute("data-target-url")
     if (!dataTargetUrl || isBilibiliUrl(dataTargetUrl)) {
       // @ts-ignore
