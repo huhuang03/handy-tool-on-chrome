@@ -57,6 +57,10 @@ function hasOpened(): Boolean {
 
 function openAll() {
   let cards = document.getElementsByClassName('feed-card');
+  if (!cards || cards.length == 0) {
+    console.log('cards is empty')
+    return
+  }
   // @ts-ignore
   cards = Array.from(cards).slice(0, MAX);
 
@@ -64,9 +68,10 @@ function openAll() {
   for (let card of cards) {
     const a = card.getElementsByTagName('a')[0];
     if (a == null) {
+      // why this go error?
       continue
     }
-    const dataTargetUrl = a.getAttribute("data-target-url")
+    const dataTargetUrl = a.getAttribute("data-target-url") || a.getAttribute('href')
     if (!dataTargetUrl || isBilibiliUrl(dataTargetUrl)) {
       // @ts-ignore
       if (openedUrl.includes(dataTargetUrl)) {
@@ -79,7 +84,9 @@ function openAll() {
     }
   }
   // @ts-ignore
-  openedUrl.push(firstOpenUrl)
+  if (firstOpenUrl) {
+    openedUrl.push(firstOpenUrl)
+  }
 }
 
 function doLoop(times: number) {
