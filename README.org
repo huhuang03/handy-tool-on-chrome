@@ -1,10 +1,17 @@
-* Bilibili
-** 增加了一个播放全部按钮，再换一批按钮下面
-点击之后会打开推荐的那6个视频
+* Features
+|          | feature               | desc        |
+|----------+-----------------------+-------------|
+| douyu    |                       |             |
+|          | remove history _blank |             |
+|----------+-----------------------+-------------|
+| bilibili |                       |             |
+|----------+-----------------------+-------------|
+|          | shortcust play speed  | shift + <,> |
+|          | play all button       |             |
 
-** 增加了一个切换速度的快捷键 > <
-shift + > 加快播放速度
-shift + < 减慢播放速度
+* Bilibili
+** Play all 增加了一个播放全部按钮，再换一批按钮下面
+点击之后会打开推荐的那6个视频
 
 * Links
 https://chrome.google.com/webstore/detail/trash-youtube-recommendat/dkomodiphnbnnfaokdokdjejjgafoffi?hl=zh-CN&authuser=0
