@@ -1,7 +1,6 @@
 export function douyuMain() {
   new MutationObserver((mutationsList, observer) => {
     const childrenChanged = mutationsList.find(it => it.type === 'childList')!!
-    console.log('observer in, childrenChanged: ' + childrenChanged)
     if (childrenChanged) {
       fixHistoryTarget()
     }

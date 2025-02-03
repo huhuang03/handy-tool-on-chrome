@@ -1,4 +1,4 @@
-import {init, showToast} from '@huhuang03/chrome_plugin_common'
+import {showToast} from '@huhuang03/chrome_plugin_common'
 
 const speeds = [0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
 
@@ -50,7 +50,6 @@ function decrementSpeed() {
   setSpeed(speeds[Math.max(0, index - 1) % speeds.length], undefined, true)
 }
 
-init()
 const _KEY_SPEED = "key_speed"
 
 function _restoreSpeed(showPrompt: boolean = false) {

@@ -6,7 +6,7 @@
 |----------+-----------------------+-------------|
 | bilibili |                       |             |
 |----------+-----------------------+-------------|
-|          | shortcust play speed  | shift + <,> |
+|          | shortcut play speed   | shift + <,> |
 |          | play all button       |             |
 
 * Bilibili
@@ -22,3 +22,22 @@ https://stackoverflow.com/questions/20865581/chrome-extension-content-script-not
   If you think it saved your time and want support me, please [[https://www.buymeacoffee.com/huhuang03][buy me a coffee]].
 
 # any idea to use other module?
+
+
+Stream<String> s1 = Stream.of(getOutputDirectory().toString());
+Stream<String> s2 = session.resolveDependencies(getProject(), PathScope.MAIN_COMPILE).stream()
+	.map(Path::toString);
+compilePath = Stream.concat(s1, s2).toList();
+
+
+        return getService(DependencyResolver.class)
+                .resolve(this, project, scope)
+                .getPaths();
+
+
+    @Override
+    public List<Path> resolveDependencies(Project project, PathScope scope) {
+        return getService(DependencyResolver.class)
+                .resolve(this, project, scope)
+                .getPaths();
+    }
