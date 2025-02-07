@@ -1,0 +1,5 @@
+const URL_NAMING_ABOUT = "about"
+const URL_NAMING_TAG = "tag"
+const URL_NAMING_CATEGORY = "category"
+
+export const RESERVED_URL_NAMING = [URL_NAMING_ABOUT, URL_NAMING_TAG, URL_NAMING_CATEGORY]
