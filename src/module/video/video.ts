@@ -50,57 +50,65 @@ function decrementSpeed() {
   setSpeed(speeds[Math.max(0, index - 1) % speeds.length], undefined, true)
 }
 
-const _KEY_SPEED = "key_speed"
-
-function _restoreSpeed(showPrompt: boolean = false) {
-  // @ts-ignore
-  chrome.storage.sync.get([_KEY_SPEED]).then(res => {
-    const video = getVideo()
-    if (!video) {
-      return
-    }
-
-    const src = video.getAttribute('src')
-    if (!src) {
-      return
-    }
-
-    if (handledVideoList.includes(src)) {
-      return
-    }
-
-    const speed = res[_KEY_SPEED]
-    if (speed) {
-      setSpeed(speed, video, showPrompt)
-    }
-    handledVideoList.push(src)
-  })
-}
 
 // @ts-ignore
 function saveSpeed(speed) {
   chrome.storage.sync.set({'key_speed': speed}).then(() => {})
 }
 
-// hack way
-function listenVideoChange() {
-  let mutationObserver = new MutationObserver((mutations, observer) => {
-    setTimeout(() => _restoreSpeed(false))
-  });
-  const video = getVideo()
-  if (!video) {
-    console.error("can't listen video change, because video is null")
-    return
+
+class InitVideo {
+  speedKey: string
+
+  constructor(speedKey: string) {
+    this.speedKey = speedKey
   }
-  mutationObserver.observe(video, {
-    childList: true,
-    subtree: true,
-    attributes: true,
-    attributeFilter: ['src']
-  })
+
+  listenVideoChange() {
+    let mutationObserver = new MutationObserver((_mutations, _observer) => {
+      setTimeout(() => this._restoreSpeed(false))
+    });
+    const video = getVideo()
+    if (!video) {
+      console.error("can't listen video change, because video is null")
+      return
+    }
+    mutationObserver.observe(video, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['src']
+    })
+  }
+
+  _restoreSpeed(showPrompt: boolean = false) {
+    // @ts-ignore
+    chrome.storage.sync.get([this.speedKey]).then(res => {
+      const video = getVideo()
+      if (!video) {
+        return
+      }
+
+      const src = video.getAttribute('src')
+      if (!src) {
+        return
+      }
+
+      if (handledVideoList.includes(src)) {
+        return
+      }
+
+      const speed = res[this.speedKey]
+      if (speed) {
+        setSpeed(speed, video, showPrompt)
+      }
+      handledVideoList.push(src)
+    })
+  }
 }
 
-export function initVideo() {
+export function initVideo(speedKey: string) {
+  let video = new InitVideo(speedKey)
   document.addEventListener('keydown', e => {
     if (e.shiftKey && e.key === '>') {
       incrementSpeed()
@@ -108,6 +116,6 @@ export function initVideo() {
       decrementSpeed()
     }
   })
-  setTimeout(_restoreSpeed)
-  listenVideoChange()
+  setTimeout(video._restoreSpeed)
+  video.listenVideoChange()
 }

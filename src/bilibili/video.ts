@@ -1,5 +1,5 @@
 import {initVideo} from '@/module/video/video';
 
 export function bilibiliInitVideo() {
-  initVideo()
+  initVideo("key_bilibili_speed")
 }

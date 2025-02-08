@@ -14,5 +14,5 @@ export function ddysMain() {
   if (split.length >= 2 && split[0] == '' && RESERVED_URL_NAMING.includes(split[1])) {
     return
   }
-  initVideo()
+  initVideo("key_ddys_speed")
 }
