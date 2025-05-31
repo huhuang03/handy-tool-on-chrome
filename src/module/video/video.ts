@@ -24,6 +24,7 @@ class InitVideo {
 
   constructor(speedKey: string) {
     this.speedKey = speedKey
+    console.log(`speedKey: ${speedKey}`)
 
     document.addEventListener('keydown', e => {
       if (e.shiftKey && e.key === '>') {
@@ -32,13 +33,14 @@ class InitVideo {
         this.decrementSpeed()
       }
     })
-    setTimeout(this._restoreSpeed)
+    setTimeout(() => this._restoreSpeed(), 1000)
     this.listenVideoChange()
   }
 
   saveSpeed(speed: number) {
+    console.log(`save speed: ${speed}, key: ${this.speedKey}`)
     chrome.storage.sync.set({
-      speedKey: speed
+      [this.speedKey]: speed
     }).then(() => {
     })
   }
@@ -81,24 +83,34 @@ class InitVideo {
   }
 
   _restoreSpeed(showPrompt: boolean = false) {
+    console.log(`_restoreSpeed begin, this.speedKey: ${this.speedKey}`)
+    if (!this.speedKey) {
+      return
+    }
+    console.log(`speedKey: ${this.speedKey}`)
     // @ts-ignore
     chrome.storage.sync.get([this.speedKey]).then(res => {
+      console.log(`res: ${res}, ${JSON.stringify(res)}`)
       const video = getVideo()
+      console.log(`video: ${video}`)
       if (!video) {
         return
       }
 
       const src = video.getAttribute('src')
+      console.log(`src: ${src}`)
       if (!src) {
         return
       }
 
+      console.log(`handledVideoList: ${handledVideoList.includes(src)}`)
       if (handledVideoList.includes(src)) {
         return
       }
 
       const speed = res[this.speedKey]
       if (speed) {
+        console.log(`set speed, speed: ${speed}`)
         this.setSpeed(speed, video, showPrompt)
       }
       handledVideoList.push(src)
@@ -125,5 +137,6 @@ class InitVideo {
  * @param speedKey
  */
 export function initVideo(speedKey: string) {
+  console.log('begin new InitVideo')
   new InitVideo(speedKey)
 }
