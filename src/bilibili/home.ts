@@ -1,5 +1,4 @@
 import { isBilibiliUrl } from '@/bilibili/bilibili_util'
-import {Callback} from 'webpack-cli';
 import {removeClass} from '@/util';
 
 const nextButtonRootClassName = 'feed-roll-btn';
@@ -153,7 +152,7 @@ function _waitAndDoOnce(startTime, func, checkFunc, timeout, checkInterval) {
 }
 
 
-function createButton(iconSvgPathList: any[], text: string, callback: Callback<never>): HTMLElement {
+function createButton(iconSvgPathList: any[], text: string, callback: () => void): HTMLElement {
   const nextButtonRoot = getNextButtonElement();
 
   // @ts-ignore
