@@ -1,18 +1,18 @@
-import virtual from '@rollup/plugin-virtual';
-import typescript from '@rollup/plugin-typescript';
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs'; // 加这个！
-import { copy } from '@web/rollup-plugin-copy';
-import alias from '@rollup/plugin-alias';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import virtual from '@rollup/plugin-virtual'
+import typescript from '@rollup/plugin-typescript'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs' // 加这个！
+import copy from 'rollup-plugin-copy'
+import alias from '@rollup/plugin-alias'
+import path from 'path'
+import { fileURLToPath } from 'url'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const commonOutput = {
   dir: 'dist'
-};
+}
 
 const commonPlugins = [
   resolve({
@@ -28,7 +28,7 @@ const commonPlugins = [
   typescript({
     tsconfig: './tsconfig.json'
   })
-];
+]
 
 export default [
   // 虚拟构建任务，只用来执行 copy
@@ -39,14 +39,13 @@ export default [
         'placeholder.js': ''
       }),
       copy({
-        patterns: '**/*',
-        exclude: ['*.js', '*.ts'],
-        rootDir: 'src/'
+        targets: [
+            { src: ['src/**/*.json', 'src/**/*.css', 'src/**/*.html'], dest: 'dist' },
+        ]
       })
     ],
     output: {
-      dir: 'dist/fake',
-      format: 'esm'
+      dir: 'dist'
     }
   },
 
@@ -62,4 +61,4 @@ export default [
     },
     plugins: commonPlugins
   }
-];
+]
