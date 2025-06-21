@@ -64,6 +64,7 @@ function openAll() {
   cards = Array.from(cards).slice(0, MAX);
 
   let firstOpenUrl;
+  let links: string[] = []
   for (let card of cards) {
     const a = card.getElementsByTagName('a')[0];
     if (a == null) {
@@ -79,13 +80,20 @@ function openAll() {
       if (!firstOpenUrl) {
         firstOpenUrl = dataTargetUrl;
       }
-      a.dispatchEvent(new MouseEvent('click', {ctrlKey: true}));
+      if (dataTargetUrl == null) {
+        continue
+      }
+      links.push(dataTargetUrl);
+      // a.dispatchEvent(new MouseEvent('click', {ctrlKey: true}));
     }
   }
   // @ts-ignore
   if (firstOpenUrl) {
     openedUrl.push(firstOpenUrl)
   }
+  chrome.runtime.sendMessage({
+    links: links,
+  }).catch(console.error);
 }
 
 function doLoop(times: number) {

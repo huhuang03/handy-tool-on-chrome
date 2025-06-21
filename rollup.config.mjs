@@ -2,16 +2,35 @@ import virtual from '@rollup/plugin-virtual'
 import typescript from '@rollup/plugin-typescript'
 import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs' // 加这个！
-import copy from 'rollup-plugin-copy'
+import { copy } from '@web/rollup-plugin-copy'
 import alias from '@rollup/plugin-alias'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { unlink } from 'fs/promises'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const commonOutput = {
   dir: 'dist'
+}
+
+function deleteVirtualOutputPlugin() {
+  return {
+    name: 'delete-virtual-output',
+    closeBundle: async() => {
+      const fileToDelete = path.resolve(__dirname,
+          'dist/_virtual_placeholder.js')
+      try {
+        await unlink(fileToDelete)
+        console.log(`Deleted ${fileToDelete}`)
+      } catch (e) {
+        if (e.code !== 'ENOENT') {
+          console.warn(`Failed to delete ${fileToDelete}:`, e)
+        }
+      }
+    }
+  }
 }
 
 const commonPlugins = [
@@ -38,11 +57,8 @@ export default [
       virtual({
         'placeholder.js': ''
       }),
-      copy({
-        targets: [
-            { src: ['src/**/*.json', 'src/**/*.css', 'src/**/*.html'], dest: 'dist' },
-        ]
-      })
+      copy({ patterns: '**/*.{svg,jpg,json,png}', rootDir: './src' }),
+      deleteVirtualOutputPlugin()
     ],
     output: {
       dir: 'dist'
@@ -53,6 +69,17 @@ export default [
   {
     input: {
       'content_script_main': 'src/content_script_main.ts'
+    },
+    output: {
+      ...commonOutput,
+      format: 'iife',
+      entryFileNames: '[name].js'
+    },
+    plugins: commonPlugins
+  },
+  {
+    input: {
+      'service_worker': 'src/background/service_worker.ts'
     },
     output: {
       ...commonOutput,
