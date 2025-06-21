@@ -4,7 +4,7 @@
   "description": "tool collection",
   "version": "0.0.1",
   "background": {
-    "service_worker": "service-worker.js"
+    "service_worker": "service_worker.js"
   },
   "content_scripts": [
     {

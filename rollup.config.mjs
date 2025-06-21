@@ -1,7 +1,7 @@
 import virtual from '@rollup/plugin-virtual'
 import typescript from '@rollup/plugin-typescript'
 import resolve from '@rollup/plugin-node-resolve'
-import commonjs from '@rollup/plugin-commonjs' // 加这个！
+import commonjs from '@rollup/plugin-commonjs'
 import { copy } from '@web/rollup-plugin-copy'
 import alias from '@rollup/plugin-alias'
 import path from 'path'
