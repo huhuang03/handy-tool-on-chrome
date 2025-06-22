@@ -1,5 +1,4 @@
 import { isBilibiliUrl } from '@/bilibili/bilibili_util'
-import {Callback} from 'webpack-cli';
 import {removeClass} from '@/util';
 
 const nextButtonRootClassName = 'feed-roll-btn';
@@ -65,6 +64,7 @@ function openAll() {
   cards = Array.from(cards).slice(0, MAX);
 
   let firstOpenUrl;
+  let links: string[] = []
   for (let card of cards) {
     const a = card.getElementsByTagName('a')[0];
     if (a == null) {
@@ -80,13 +80,20 @@ function openAll() {
       if (!firstOpenUrl) {
         firstOpenUrl = dataTargetUrl;
       }
-      a.dispatchEvent(new MouseEvent('click', {ctrlKey: true}));
+      if (dataTargetUrl == null) {
+        continue
+      }
+      links.push(dataTargetUrl);
+      // a.dispatchEvent(new MouseEvent('click', {ctrlKey: true}));
     }
   }
   // @ts-ignore
   if (firstOpenUrl) {
     openedUrl.push(firstOpenUrl)
   }
+  chrome.runtime.sendMessage({
+    links: links,
+  }).catch(console.error);
 }
 
 function doLoop(times: number) {
@@ -153,7 +160,7 @@ function _waitAndDoOnce(startTime, func, checkFunc, timeout, checkInterval) {
 }
 
 
-function createButton(iconSvgPathList: any[], text: string, callback: Callback<never>): HTMLElement {
+function createButton(iconSvgPathList: any[], text: string, callback: () => void): HTMLElement {
   const nextButtonRoot = getNextButtonElement();
 
   // @ts-ignore
