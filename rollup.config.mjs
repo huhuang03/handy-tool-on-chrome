@@ -36,14 +36,13 @@ function deleteVirtualOutputPlugin() {
 const commonPlugins = [
   resolve({
     browser: true,
-    extensions: ['.ts', '.js']
   }),
   commonjs(),
-  alias({
-    entries: [
-      { find: '@', replacement: path.resolve(__dirname, 'src') }
-    ]
-  }),
+  // alias({
+  //   entries: [
+  //     { find: '@', replacement: path.resolve(__dirname, 'src') }
+  //   ]
+  // }),
   typescript({
     tsconfig: './tsconfig.json'
   })
@@ -67,13 +66,11 @@ export default [
 
   // 实际构建 content_script_main.ts
   {
-    input: {
-      'content_script_main': 'src/content_script_main.ts'
-    },
+    input: 'src/content_script_main.ts',
     output: {
-      ...commonOutput,
+      file: 'dist/content_script_main.js',
       format: 'iife',
-      entryFileNames: '[name].js'
+      sourcemap: true
     },
     plugins: commonPlugins
   },
