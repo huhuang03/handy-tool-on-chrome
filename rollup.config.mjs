@@ -37,11 +37,6 @@ const commonPlugins = [
     browser: true,
   }),
   commonjs(),
-  // alias({
-  //   entries: [
-  //     { find: '@', replacement: path.resolve(__dirname, 'src') }
-  //   ]
-  // }),
   typescript({
     tsconfig: './tsconfig.json'
   })
@@ -55,15 +50,22 @@ export default [
       virtual({
         'placeholder.js': ''
       }),
-      copy({ patterns: '**/*.{svg,jpg,json,png}', rootDir: './src' }),
+      copy({ patterns: '**/*.{svg,jpg,json,png,html}', rootDir: './src' }),
       deleteVirtualOutputPlugin()
     ],
     output: {
       dir: 'dist'
     }
   },
-
-  // 实际构建 content_script_main.ts
+  {
+    input: 'src/options/index.ts',
+    output: {
+      file: 'dist/options/index.js',
+      format: 'iife',
+      sourcemap: true
+    },
+    plugins: commonPlugins
+  },
   {
     input: 'src/content_script_main.ts',
     output: {

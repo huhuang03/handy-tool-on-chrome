@@ -29,5 +29,6 @@
   ],
   "host_permissions": [
     "https://www.bilibili.com/*"
-  ]
+  ],
+  "options_page": "options/options.html"
 }
