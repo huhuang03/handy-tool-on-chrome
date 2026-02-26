@@ -6,6 +6,7 @@ import { copy } from '@web/rollup-plugin-copy'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { unlink } from 'fs/promises'
+import replace from '@rollup/plugin-replace'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -34,11 +35,15 @@ function deleteVirtualOutputPlugin() {
 
 const commonPlugins = [
   resolve({
-    browser: true,
+    browser: true
   }),
   commonjs(),
   typescript({
     tsconfig: './tsconfig.json'
+  }),
+  replace({
+    preventAssignment: true,
+    'process.env.NODE_ENV': JSON.stringify('production')
   })
 ]
 
