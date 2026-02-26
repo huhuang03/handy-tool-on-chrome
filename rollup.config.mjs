@@ -58,6 +58,15 @@ export default [
     }
   },
   {
+    input: 'src/popup/index.tsx',
+    output: {
+      file: 'dist/popup/index.js',
+      format: 'iife',
+      sourcemap: true
+    },
+    plugins: commonPlugins
+  },
+  {
     input: 'src/options/index.ts',
     output: {
       file: 'dist/options/index.js',

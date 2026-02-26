@@ -1,7 +1,12 @@
+export enum BilibiliOpenAllPageEnum {
+  FIVE = 5,
+  TEN = 10
+}
+
 export interface ExtensionConfig {
-  bilibiliOpenAllPages: 5 | 10;
+  bilibiliOpenAllPages: BilibiliOpenAllPageEnum.FIVE | BilibiliOpenAllPageEnum.TEN;
 }
 
 export const DEFAULT_CONFIG: ExtensionConfig = {
-  bilibiliOpenAllPages: 10
+  bilibiliOpenAllPages: BilibiliOpenAllPageEnum.TEN
 }
