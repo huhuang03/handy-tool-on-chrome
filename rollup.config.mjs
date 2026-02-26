@@ -6,6 +6,7 @@ import { copy } from '@web/rollup-plugin-copy'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { unlink } from 'fs/promises'
+import replace from '@rollup/plugin-replace'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -34,16 +35,15 @@ function deleteVirtualOutputPlugin() {
 
 const commonPlugins = [
   resolve({
-    browser: true,
+    browser: true
   }),
   commonjs(),
-  // alias({
-  //   entries: [
-  //     { find: '@', replacement: path.resolve(__dirname, 'src') }
-  //   ]
-  // }),
   typescript({
     tsconfig: './tsconfig.json'
+  }),
+  replace({
+    preventAssignment: true,
+    'process.env.NODE_ENV': JSON.stringify('production')
   })
 ]
 
@@ -55,15 +55,31 @@ export default [
       virtual({
         'placeholder.js': ''
       }),
-      copy({ patterns: '**/*.{svg,jpg,json,png}', rootDir: './src' }),
+      copy({ patterns: '**/*.{svg,jpg,json,png,html}', rootDir: './src' }),
       deleteVirtualOutputPlugin()
     ],
     output: {
       dir: 'dist'
     }
   },
-
-  // 实际构建 content_script_main.ts
+  {
+    input: 'src/popup/index.tsx',
+    output: {
+      file: 'dist/popup/index.js',
+      format: 'iife',
+      sourcemap: true
+    },
+    plugins: commonPlugins
+  },
+  {
+    input: 'src/options/index.ts',
+    output: {
+      file: 'dist/options/index.js',
+      format: 'iife',
+      sourcemap: true
+    },
+    plugins: commonPlugins
+  },
   {
     input: 'src/content_script_main.ts',
     output: {
