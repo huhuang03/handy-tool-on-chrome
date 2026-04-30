@@ -1,6 +1,7 @@
 import {bilibiliMain} from '@/bilibili/bilibili_main';
 import {douyuMain} from '@/douyu/douyu_main';
 import {ddysMain} from '@/ddys/ddys';
+import {hideElementMain} from '@/hide_element/hide_element_main';
 
 const host_map: {[key: string]: () => void} = {
   'www.bilibili.com': bilibiliMain,
@@ -10,3 +11,4 @@ const host_map: {[key: string]: () => void} = {
 
 const host = location.host
 host_map[host]?.()
+hideElementMain().then();

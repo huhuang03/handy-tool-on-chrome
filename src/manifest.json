@@ -11,7 +11,8 @@
       "matches": [
         "https://www.bilibili.com/*",
         "https://www.douyu.com/*",
-        "https://ddys.pro/*"
+        "https://ddys.pro/*",
+        "https://www.baidu.com/*"
       ],
       "js": [
         "content_script_main.js"

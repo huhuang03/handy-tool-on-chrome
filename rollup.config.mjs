@@ -72,7 +72,7 @@ export default [
     plugins: commonPlugins
   },
   {
-    input: 'src/options/index.ts',
+    input: 'src/options/index.tsx',
     output: {
       file: 'dist/options/index.js',
       format: 'iife',
